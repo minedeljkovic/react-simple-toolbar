@@ -2,7 +2,7 @@
   "name": "react-simple-toolbar",
   "version": "1.0.1",
   "description": "A carefully crafted simple toolbar for React",
-  "main": "lib/index.jsx",
+  "main": "lib/index.js",
   "scripts": {
     "test": "make",
     "lib": "./node_modules/.bin/gulp",

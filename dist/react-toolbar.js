@@ -58,8 +58,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var React     = __webpack_require__(1)
 	var normalize = __webpack_require__(5)
-	var assign    = __webpack_require__(3)
-	var clone = React.cloneElement || __webpack_require__(4)
+	var assign    = __webpack_require__(4)
+	var clone = React.cloneElement || __webpack_require__(3)
 	var emptyFn = function(){}
 
 	var DISPLAY_NAME = 'ReactToolbar'
@@ -251,9 +251,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var React     = __webpack_require__(1)
 	var normalize = __webpack_require__(5)
-	var assign    = __webpack_require__(3)
+	var assign    = __webpack_require__(4)
 
-	var cloneWithProps = React.cloneElement || __webpack_require__(4)
+	var cloneWithProps = React.cloneElement || __webpack_require__(3)
 	var DISPLAY_NAME   = 'ReactToolbarRegion'
 
 	var JUSTIFY_MAP = {
@@ -375,38 +375,6 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
-
-	function ToObject(val) {
-		if (val == null) {
-			throw new TypeError('Object.assign cannot be called with null or undefined');
-		}
-
-		return Object(val);
-	}
-
-	module.exports = Object.assign || function (target, source) {
-		var from;
-		var keys;
-		var to = ToObject(target);
-
-		for (var s = 1; s < arguments.length; s++) {
-			from = arguments[s];
-			keys = Object.keys(Object(from));
-
-			for (var i = 0; i < keys.length; i++) {
-				to[keys[i]] = from[keys[i]];
-			}
-		}
-
-		return to;
-	};
-
-
-/***/ },
-/* 4 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
 	var React    = __webpack_require__(1)
 	  , hasOwn   = Object.prototype.hasOwnProperty
 	  , version  = React.version.split('.').map(parseFloat)
@@ -477,6 +445,38 @@ return /******/ (function(modules) { // webpackBootstrap
 	      target[key] = arguments[i][key]   
 	  return target
 	}
+
+/***/ },
+/* 4 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	function ToObject(val) {
+		if (val == null) {
+			throw new TypeError('Object.assign cannot be called with null or undefined');
+		}
+
+		return Object(val);
+	}
+
+	module.exports = Object.assign || function (target, source) {
+		var from;
+		var keys;
+		var to = ToObject(target);
+
+		for (var s = 1; s < arguments.length; s++) {
+			from = arguments[s];
+			keys = Object.keys(Object(from));
+
+			for (var i = 0; i < keys.length; i++) {
+				to[keys[i]] = from[keys[i]];
+			}
+		}
+
+		return to;
+	};
+
 
 /***/ },
 /* 5 */
@@ -640,8 +640,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var getPrefix     = __webpack_require__(13)
-	var forcePrefixed = __webpack_require__(14)
+	var getPrefix     = __webpack_require__(14)
+	var forcePrefixed = __webpack_require__(16)
 	var el            = __webpack_require__(15)
 
 	var MEMORY = {}
@@ -694,8 +694,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var toUpperFirst = __webpack_require__(16)
-	var getPrefix    = __webpack_require__(13)
+	var toUpperFirst = __webpack_require__(13)
+	var getPrefix    = __webpack_require__(14)
 	var el           = __webpack_require__(15)
 
 	var MEMORY = {}
@@ -791,7 +791,19 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var toUpperFirst = __webpack_require__(16)
+	module.exports = function(str){
+		return str?
+				str.charAt(0).toUpperCase() + str.slice(1):
+				''
+	}
+
+/***/ },
+/* 14 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var toUpperFirst = __webpack_require__(13)
 	var prefixes     = ["ms", "Moz", "Webkit", "O"]
 
 	var el = __webpack_require__(15)
@@ -825,35 +837,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 14 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var toUpperFirst = __webpack_require__(16)
-	var getPrefix    = __webpack_require__(13)
-	var properties   = __webpack_require__(12)
-
-	/**
-	 * Returns the given key prefixed, if the property is found in the prefixProps map.
-	 *
-	 * Does not test if the property supports the given value unprefixed.
-	 * If you need this, use './getPrefixed' instead
-	 */
-	module.exports = function(key, value){
-
-		if (!properties[key]){
-			return key
-		}
-
-		var prefix = getPrefix(key)
-
-		return prefix?
-					prefix + toUpperFirst(key):
-					key
-	}
-
-/***/ },
 /* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -881,10 +864,27 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	module.exports = function(str){
-		return str?
-				str.charAt(0).toUpperCase() + str.slice(1):
-				''
+	var toUpperFirst = __webpack_require__(13)
+	var getPrefix    = __webpack_require__(14)
+	var properties   = __webpack_require__(12)
+
+	/**
+	 * Returns the given key prefixed, if the property is found in the prefixProps map.
+	 *
+	 * Does not test if the property supports the given value unprefixed.
+	 * If you need this, use './getPrefixed' instead
+	 */
+	module.exports = function(key, value){
+
+		if (!properties[key]){
+			return key
+		}
+
+		var prefix = getPrefix(key)
+
+		return prefix?
+					prefix + toUpperFirst(key):
+					key
 	}
 
 /***/ }
