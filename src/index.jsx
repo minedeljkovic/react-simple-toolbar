@@ -114,8 +114,6 @@ var Toolbar = React.createClass({
 
 		var style = assign({}, props.defaultStyle, defaultOrientationStyle, props.style, orientationStyle)
 
-		style.position = style.position == 'absolute'? style.position: 'relative'
-
 		return normalize(style)
 	},
 
