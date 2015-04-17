@@ -1,6 +1,6 @@
 {
   "name": "react-simple-toolbar",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A carefully crafted simple toolbar for React",
   "main": "lib/index.jsx",
   "scripts": {
