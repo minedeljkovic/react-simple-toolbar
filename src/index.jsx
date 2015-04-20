@@ -154,7 +154,7 @@ var Toolbar = React.createClass({
 	},
 
 	prepareRegion: function(region, index, regions) {
-		index   = index || 0
+		index   = index   || 0
 		regions = regions || []
 
 		var props = this.props

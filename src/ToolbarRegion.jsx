@@ -41,7 +41,7 @@ module.exports = React.createClass({
 				boxSizing   : 'border-box',
 
 				// alignSelf   : 'center',
-				alignItems  : 'stretch',
+				alignItems  : 'center',
 				flexShrink  : 1,
 				flexBasis   : 0,
 
