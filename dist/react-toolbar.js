@@ -58,8 +58,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var React     = __webpack_require__(1)
 	var normalize = __webpack_require__(5)
-	var assign    = __webpack_require__(4)
-	var clone = React.cloneElement || __webpack_require__(3)
+	var assign    = __webpack_require__(3)
+	var clone = React.cloneElement || __webpack_require__(4)
 	var emptyFn = function(){}
 
 	var DISPLAY_NAME = 'ReactToolbar'
@@ -80,6 +80,16 @@ return /******/ (function(modules) { // webpackBootstrap
 		return 'center'
 	}
 
+	var THEMES = {
+		default: {
+			style: {
+				//theme styles
+				color  : 'rgb(120, 120, 120)',
+				border : '1px solid rgb(218, 218, 218)'
+			}
+		}
+	}
+
 	var Toolbar = React.createClass({
 
 		displayName: DISPLAY_NAME,
@@ -90,19 +100,16 @@ return /******/ (function(modules) { // webpackBootstrap
 				isReactToolbar: true,
 
 				padding: 2,
+				theme: 'default',
 
 				defaultStyle  : {
 					display  : 'inline-flex',
 					boxSizing: 'border-box',
-
 					overflow: 'hidden',
 					whiteSpace: 'nowrap',
 					textOverflow: 'ellipsis',
 
-					//theme styles
-					color  : 'rgb(120, 120, 120)',
-					border : '1px solid rgb(218, 218, 218)',
-					padding: 2,
+					padding: 2
 				},
 
 				defaultHorizontalStyle: {
@@ -168,7 +175,11 @@ return /******/ (function(modules) { // webpackBootstrap
 				orientationStyle = props.verticalStyle
 			}
 
-			var style = assign({}, props.defaultStyle, defaultOrientationStyle, props.style, orientationStyle)
+			var themes     = Toolbar.themes || {}
+			var theme      = themes[props.theme]
+			var themeStyle = theme? theme.style: null
+
+			var style = assign({}, props.defaultStyle, defaultOrientationStyle, themeStyle, props.style, orientationStyle)
 
 			return normalize(style)
 		},
@@ -232,6 +243,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	})
 
 	Toolbar.Region = __webpack_require__(2)
+	Toolbar.themes = THEMES
 
 	module.exports = Toolbar
 
@@ -249,9 +261,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var React     = __webpack_require__(1)
 	var normalize = __webpack_require__(5)
-	var assign    = __webpack_require__(4)
+	var assign    = __webpack_require__(3)
 
-	var cloneWithProps = React.cloneElement || __webpack_require__(3)
+	var cloneWithProps = React.cloneElement || __webpack_require__(4)
 	var DISPLAY_NAME   = 'ReactToolbarRegion'
 
 	var JUSTIFY_MAP = {
@@ -373,6 +385,38 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
+
+	function ToObject(val) {
+		if (val == null) {
+			throw new TypeError('Object.assign cannot be called with null or undefined');
+		}
+
+		return Object(val);
+	}
+
+	module.exports = Object.assign || function (target, source) {
+		var from;
+		var keys;
+		var to = ToObject(target);
+
+		for (var s = 1; s < arguments.length; s++) {
+			from = arguments[s];
+			keys = Object.keys(Object(from));
+
+			for (var i = 0; i < keys.length; i++) {
+				to[keys[i]] = from[keys[i]];
+			}
+		}
+
+		return to;
+	};
+
+
+/***/ },
+/* 4 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
 	var React    = __webpack_require__(1)
 	  , hasOwn   = Object.prototype.hasOwnProperty
 	  , version  = React.version.split('.').map(parseFloat)
@@ -443,38 +487,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      target[key] = arguments[i][key]   
 	  return target
 	}
-
-/***/ },
-/* 4 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	function ToObject(val) {
-		if (val == null) {
-			throw new TypeError('Object.assign cannot be called with null or undefined');
-		}
-
-		return Object(val);
-	}
-
-	module.exports = Object.assign || function (target, source) {
-		var from;
-		var keys;
-		var to = ToObject(target);
-
-		for (var s = 1; s < arguments.length; s++) {
-			from = arguments[s];
-			keys = Object.keys(Object(from));
-
-			for (var i = 0; i < keys.length; i++) {
-				to[keys[i]] = from[keys[i]];
-			}
-		}
-
-		return to;
-	};
-
 
 /***/ },
 /* 5 */
@@ -563,8 +575,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var getStylePrefixed = __webpack_require__(10)
-	var properties       = __webpack_require__(11)
+	var getStylePrefixed = __webpack_require__(11)
+	var properties       = __webpack_require__(12)
 
 	module.exports = function(key, value){
 
@@ -602,7 +614,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var getCssPrefixedValue = __webpack_require__(12)
+	var getCssPrefixedValue = __webpack_require__(10)
 
 	module.exports = function(target){
 		target.plugins = target.plugins || [
@@ -638,8 +650,62 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var toUpperFirst = __webpack_require__(13)
-	var getPrefix    = __webpack_require__(14)
+	var getPrefix     = __webpack_require__(13)
+	var forcePrefixed = __webpack_require__(14)
+	var el            = __webpack_require__(15)
+
+	var MEMORY = {}
+	var STYLE
+	var ELEMENT
+
+	module.exports = function(key, value, force){
+
+	    ELEMENT = ELEMENT || el()
+	    STYLE   = STYLE   ||  ELEMENT.style
+
+	    var k = key + ': ' + value
+
+	    if (MEMORY[k]){
+	        return MEMORY[k]
+	    }
+
+	    var prefix
+	    var prefixed
+	    var prefixedValue
+
+	    if (force || !(key in STYLE)){
+
+	        prefix = getPrefix('appearance')
+
+	        if (prefix){
+	            prefixed = forcePrefixed(key, value)
+
+	            prefixedValue = '-' + prefix.toLowerCase() + '-' + value
+
+	            if (prefixed in STYLE){
+	                ELEMENT.style[prefixed] = ''
+	                ELEMENT.style[prefixed] = prefixedValue
+
+	                if (ELEMENT.style[prefixed] !== ''){
+	                    value = prefixedValue
+	                }
+	            }
+	        }
+	    }
+
+	    MEMORY[k] = value
+
+	    return value
+	}
+
+/***/ },
+/* 11 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var toUpperFirst = __webpack_require__(16)
+	var getPrefix    = __webpack_require__(13)
 	var el           = __webpack_require__(15)
 
 	var MEMORY = {}
@@ -689,7 +755,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 11 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -730,78 +796,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 12 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var getPrefix     = __webpack_require__(14)
-	var forcePrefixed = __webpack_require__(16)
-	var el            = __webpack_require__(15)
-
-	var MEMORY = {}
-	var STYLE
-	var ELEMENT
-
-	module.exports = function(key, value, force){
-
-	    ELEMENT = ELEMENT || el()
-	    STYLE   = STYLE   ||  ELEMENT.style
-
-	    var k = key + ': ' + value
-
-	    if (MEMORY[k]){
-	        return MEMORY[k]
-	    }
-
-	    var prefix
-	    var prefixed
-	    var prefixedValue
-
-	    if (force || !(key in STYLE)){
-
-	        prefix = getPrefix('appearance')
-
-	        if (prefix){
-	            prefixed = forcePrefixed(key, value)
-
-	            prefixedValue = '-' + prefix.toLowerCase() + '-' + value
-
-	            if (prefixed in STYLE){
-	                ELEMENT.style[prefixed] = ''
-	                ELEMENT.style[prefixed] = prefixedValue
-
-	                if (ELEMENT.style[prefixed] !== ''){
-	                    value = prefixedValue
-	                }
-	            }
-	        }
-	    }
-
-	    MEMORY[k] = value
-
-	    return value
-	}
-
-/***/ },
 /* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	module.exports = function(str){
-		return str?
-				str.charAt(0).toUpperCase() + str.slice(1):
-				''
-	}
-
-/***/ },
-/* 14 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var toUpperFirst = __webpack_require__(13)
+	var toUpperFirst = __webpack_require__(16)
 	var prefixes     = ["ms", "Moz", "Webkit", "O"]
 
 	var el = __webpack_require__(15)
@@ -835,6 +835,35 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
+/* 14 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var toUpperFirst = __webpack_require__(16)
+	var getPrefix    = __webpack_require__(13)
+	var properties   = __webpack_require__(12)
+
+	/**
+	 * Returns the given key prefixed, if the property is found in the prefixProps map.
+	 *
+	 * Does not test if the property supports the given value unprefixed.
+	 * If you need this, use './getPrefixed' instead
+	 */
+	module.exports = function(key, value){
+
+		if (!properties[key]){
+			return key
+		}
+
+		var prefix = getPrefix(key)
+
+		return prefix?
+					prefix + toUpperFirst(key):
+					key
+	}
+
+/***/ },
 /* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -862,27 +891,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var toUpperFirst = __webpack_require__(13)
-	var getPrefix    = __webpack_require__(14)
-	var properties   = __webpack_require__(11)
-
-	/**
-	 * Returns the given key prefixed, if the property is found in the prefixProps map.
-	 *
-	 * Does not test if the property supports the given value unprefixed.
-	 * If you need this, use './getPrefixed' instead
-	 */
-	module.exports = function(key, value){
-
-		if (!properties[key]){
-			return key
-		}
-
-		var prefix = getPrefix(key)
-
-		return prefix?
-					prefix + toUpperFirst(key):
-					key
+	module.exports = function(str){
+		return str?
+				str.charAt(0).toUpperCase() + str.slice(1):
+				''
 	}
 
 /***/ }
