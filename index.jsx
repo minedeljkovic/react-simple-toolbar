@@ -10,7 +10,7 @@ var App = React.createClass({
     render: function() {
 
         return <div className="App">
-                <Toolbar>
+                <Toolbar theme={null}>
                     <Region>
                         Export
                     </Region>
