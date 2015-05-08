@@ -74,8 +74,8 @@ var Region  = Toolbar.Region
  $ git clone https://github.com/zippyui/react-simple-toolbar
  $ cd react-simple-toolbar
  $ npm install
- $ npm serve # to start http server
- $ npm dev   * to start webpack-dev-server
+ $ npm run serve # to start http server
+ $ npm run dev   # to start webpack-dev-server
  ```
 
  Now navigate to [localhost:9091](http://localhost:9091/)
