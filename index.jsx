@@ -1,6 +1,7 @@
 'use strict';
 
 var React   = require('react')
+var ReactDOM   = require('react-dom')
 var Toolbar = require('./src')
 
 var Region  = Toolbar.Region
@@ -31,4 +32,4 @@ var App = React.createClass({
     }
 })
 
-React.render(<App />, document.getElementById('content'))
+ReactDOM.render(<App />, document.getElementById('content'))
