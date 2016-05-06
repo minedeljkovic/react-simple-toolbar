@@ -27,7 +27,8 @@
     "webpack-dev-server": "^1.6.6"
   },
   "peerDependencies": {
-    "react": ">=0.12.0"
+    "react": ">=0.14.0 || >=15.0.0-0",
+    "react-dom": ">=0.14.0 || >=15.0.0-0"
   },
   "dependencies": {
     "object-assign": "^2.0.0",
