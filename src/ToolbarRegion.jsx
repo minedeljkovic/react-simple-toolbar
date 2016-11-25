@@ -68,7 +68,13 @@ module.exports = React.createClass({
 	render: function(){
 		var props = this.prepareProps(this.props)
 
-		return <div {...props} />
+		return (
+			<div
+				children={props.children}
+				className={props.className}
+				style={props.style}
+			/>
+		);
 	},
 
 

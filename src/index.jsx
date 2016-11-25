@@ -83,7 +83,13 @@ var Toolbar = React.createClass({
 
 		// this.prepareContent(props)
 
-		return <div {...props} />
+		return (
+			<div
+				children={props.children}
+				className={props.className}
+				style={props.style}
+			/>
+		)
 	},
 
 	prepareContent: function(props){
